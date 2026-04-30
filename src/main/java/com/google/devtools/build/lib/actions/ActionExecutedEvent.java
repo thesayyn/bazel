@@ -29,6 +29,7 @@ import com.google.devtools.build.lib.buildeventstream.BuildEventWithConfiguratio
 import com.google.devtools.build.lib.buildeventstream.GenericBuildEvent;
 import com.google.devtools.build.lib.buildeventstream.NullConfiguration;
 import com.google.devtools.build.lib.buildeventstream.PathConverter;
+import com.google.devtools.build.lib.exec.Protos.Digest;
 import com.google.devtools.build.lib.server.FailureDetails;
 import com.google.devtools.build.lib.vfs.Path;
 import com.google.devtools.build.lib.vfs.PathFragment;
@@ -53,6 +54,7 @@ public final class ActionExecutedEvent implements BuildEventWithConfiguration {
   private final Path stdout;
   private final Path stderr;
   private final ErrorTiming timing;
+  private final ImmutableList<Digest> spawnDigests;
 
   /** Timestamp of the action starting; if no timestamp is available will be {@code null}. */
   @Nullable private final Instant startTime;
@@ -71,7 +73,8 @@ public final class ActionExecutedEvent implements BuildEventWithConfiguration {
       Path stderr,
       ErrorTiming timing,
       @Nullable Instant startTime,
-      @Nullable Instant endTime) {
+      @Nullable Instant endTime,
+      ImmutableList<Digest> spawnDigests) {
     this.actionId = actionId;
     this.action = action;
     this.exception = exception;
@@ -83,6 +86,7 @@ public final class ActionExecutedEvent implements BuildEventWithConfiguration {
     this.timing = timing;
     this.startTime = startTime;
     this.endTime = endTime;
+    this.spawnDigests = spawnDigests;
     Preconditions.checkState(
         (this.exception == null) == (this.timing == ErrorTiming.NO_ERROR), this);
     Preconditions.checkState(
@@ -178,7 +182,8 @@ public final class ActionExecutedEvent implements BuildEventWithConfiguration {
     BuildEventStreamProtos.ActionExecuted.Builder actionBuilder =
         BuildEventStreamProtos.ActionExecuted.newBuilder()
             .setSuccess(getException() == null)
-            .setType(action.getMnemonic());
+            .setType(action.getMnemonic())
+            .addAllSpawnDigests(spawnDigests);
     if (startTime != null) {
       actionBuilder.setStartTime(timestampProto(startTime));
       if (endTime != null) {
@@ -253,6 +258,7 @@ public final class ActionExecutedEvent implements BuildEventWithConfiguration {
         .add("primaryOutputMetadata", primaryOutputMetadata)
         .add("startTime", startTime)
         .add("endTime", endTime)
+        .add("spawnDigests", spawnDigests)
         .toString();
   }
 

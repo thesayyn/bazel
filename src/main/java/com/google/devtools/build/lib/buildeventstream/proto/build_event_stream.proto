@@ -27,6 +27,7 @@ import "src/main/protobuf/action_cache.proto";
 import "src/main/protobuf/command_line.proto";
 import "src/main/protobuf/failure_details.proto";
 import "src/main/protobuf/invocation_policy.proto";
+import "src/main/protobuf/spawn.proto";
 
 option java_package = "com.google.devtools.build.lib.buildeventstream";
 option java_outer_classname = "BuildEventStreamProtos";
@@ -612,6 +613,11 @@ message ActionExecuted {
   //
   // The default type will be `tools.proto.SpawnExec` found in `spawn.proto`.
   repeated google.protobuf.Any strategy_details = 14;
+
+  // Digests of spawns remotely cached or executed by this action. Typically one
+  // digest per action, but some actions may have multiple spawns (e.g. tests
+  // with multiple attempts).
+  repeated tools.protos.Digest spawn_digests = 16;
 }
 
 // Collection of all output files belonging to that output group.

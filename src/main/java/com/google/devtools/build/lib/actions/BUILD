@@ -171,6 +171,7 @@ java_library(
         "//src/main/protobuf:action_cache_java_proto",
         "//src/main/protobuf:extra_actions_base_java_proto",
         "//src/main/protobuf:failure_details_java_proto",
+        "//src/main/protobuf:spawn_java_proto",
         "//third_party:auto_value",
         "//third_party:flogger",
         "//third_party:guava",

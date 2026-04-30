@@ -170,7 +170,8 @@ public final class BuildEventStreamerTest extends FoundationTestCase {
           /* stderr= */ null,
           ErrorTiming.NO_ERROR,
           /* startTime= */ null,
-          /* endTime= */ null);
+          /* endTime= */ null,
+          /* spawnDigests= */ ImmutableList.of());
 
   private static final class RecordingBuildEventTransport implements BuildEventTransport {
     private final List<BuildEvent> events = new ArrayList<>();
@@ -1522,7 +1523,8 @@ public final class BuildEventStreamerTest extends FoundationTestCase {
             /* stderr= */ null,
             ErrorTiming.BEFORE_EXECUTION,
             /* startTime= */ null,
-            /* endTime= */ null);
+            /* endTime= */ null,
+            /* spawnDigests= */ ImmutableList.of());
 
     streamer.buildEvent(SUCCESSFUL_ACTION_EXECUTED_EVENT);
     streamer.buildEvent(failedActionExecutedEvent);
@@ -1567,7 +1569,8 @@ public final class BuildEventStreamerTest extends FoundationTestCase {
             /* stderr= */ null,
             ErrorTiming.BEFORE_EXECUTION,
             /* startTime= */ null,
-            /* endTime= */ null);
+            /* endTime= */ null,
+            /* spawnDigests= */ ImmutableList.of());
 
     streamer.buildEvent(SUCCESSFUL_ACTION_EXECUTED_EVENT);
     streamer.buildEvent(failedActionExecutedEvent);

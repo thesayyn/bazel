@@ -95,6 +95,7 @@ import com.google.devtools.build.lib.events.EventKind;
 import com.google.devtools.build.lib.events.ExtendedEventHandler;
 import com.google.devtools.build.lib.events.Reporter;
 import com.google.devtools.build.lib.exec.ExecutionOptions;
+import com.google.devtools.build.lib.exec.Protos.Digest;
 import com.google.devtools.build.lib.profiler.Profiler;
 import com.google.devtools.build.lib.profiler.ProfilerTask;
 import com.google.devtools.build.lib.profiler.SilentCloseable;
@@ -1926,6 +1927,7 @@ public final class SkyframeActionExecutor {
         findSpawnResultsInActionResultAndException(actionResult, exception);
     Instant firstStartTime = Instant.MAX;
     Instant lastEndTime = Instant.MIN;
+    ImmutableList.Builder<Digest> spawnDigests = ImmutableList.builder();
     for (SpawnResult spawnResult : spawnResults) {
       // Not all SpawnResults have a start time, and some use Instant.MIN/MAX instead of null.
       @Nullable Instant startTime = spawnResult.getStartTime();
@@ -1933,6 +1935,11 @@ public final class SkyframeActionExecutor {
         Instant endTime = startTime.plusMillis(spawnResult.getWallTimeInMs());
         firstStartTime = min(firstStartTime, startTime);
         lastEndTime = max(lastEndTime, endTime);
+      }
+      // A spawn might not have a digest, in which case skip it.
+      @Nullable Digest spawnDigest = spawnResult.getDigest();
+      if (spawnDigest != null) {
+        spawnDigests.add(spawnDigest);
       }
     }
     eventHandler.post(
@@ -1947,7 +1954,8 @@ public final class SkyframeActionExecutor {
             stderr,
             errorTiming,
             firstStartTime.equals(Instant.MAX) ? null : firstStartTime,
-            lastEndTime.equals(Instant.MIN) ? null : lastEndTime));
+            lastEndTime.equals(Instant.MIN) ? null : lastEndTime,
+            spawnDigests.build()));
   }
 
   /**
