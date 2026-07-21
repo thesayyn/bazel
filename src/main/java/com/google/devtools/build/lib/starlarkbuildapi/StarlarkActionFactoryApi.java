@@ -339,7 +339,7 @@ This function must be top-level, i.e. lambdas and nested functions are not allow
       throws EvalException;
 
   @StarlarkMethod(
-      name = "duplicate",
+      name = "copy",
       doc =
           "Creates an action that makes <code>target_file</code>'s content available at"
               + " <code>output</code>: the same content re-addressed at a second path, sharing the"
@@ -375,7 +375,7 @@ This function must be top-level, i.e. lambdas and nested functions are not allow
             doc = "Progress message to show to the user during the build."),
       },
       useStarlarkThread = true)
-  void duplicate(FileApi output, FileApi targetFile, Object progressMessage, StarlarkThread thread)
+  void copy(FileApi output, FileApi targetFile, Object progressMessage, StarlarkThread thread)
       throws EvalException;
 
   @StarlarkMethod(

@@ -135,7 +135,7 @@ java_library(
         ":actions/abstract_file_write_action",
         ":actions/buildinfo_file_write_action",
         ":actions/compression",
-        ":actions/duplicate_action",
+        ":actions/copy_action",
         ":actions/custom_command_line",
         ":actions/lazy_write_nested_set_of_tuple_action",
         ":actions/parameter_file_write_action",
@@ -1418,8 +1418,8 @@ java_library(
 )
 
 java_library(
-    name = "actions/duplicate_action",
-    srcs = ["actions/DuplicateAction.java"],
+    name = "actions/copy_action",
+    srcs = ["actions/CopyAction.java"],
     deps = [
         "//src/main/java/com/google/devtools/build/lib/actions",
         "//src/main/java/com/google/devtools/build/lib/actions:artifacts",
