@@ -39,7 +39,7 @@ import java.io.IOException;
 import javax.annotation.Nullable;
 
 /**
- * Action that <em>declares</em> its output to be a content link of its input: the same content,
+ * Action that <em>declares</em> its output to be a duplicate of its input: the same content,
  * re-addressed at the output's exec path, sharing the input's digest.
  *
  * <p>This action performs no spawn and writes nothing to the filesystem. It only injects the
@@ -50,21 +50,21 @@ import javax.annotation.Nullable;
  * it stages the artifact -- this action never makes that decision, exactly as path mapping keeps
  * laydown out of the action.
  *
- * <p>Contrast {@link SymlinkAction}, which is realized as a followable symlink; a content link is
- * realized as content so its {@code realpath} is stable within the consuming tree. Strategies that
- * cannot materialize content do not honor the request; that is an accepted limitation.
+ * <p>Contrast {@link SymlinkAction}, which is realized as a followable symlink; a duplicate is realized
+ * as content so its {@code realpath} is stable within the consuming tree. Strategies that cannot
+ * materialize content do not honor the request; that is an accepted limitation.
  */
-public final class LinkAction extends AbstractAction {
+public final class DuplicateAction extends AbstractAction {
   private static final String GUID = "6b4f2c11-0e7a-4d3f-9a2c-8b1d5e6f7a90";
 
   @Nullable private final String progressMessage;
 
-  public static LinkAction create(
+  public static DuplicateAction create(
       ActionOwner owner, Artifact input, Artifact output, String progressMessage) {
-    return new LinkAction(owner, input, output, progressMessage);
+    return new DuplicateAction(owner, input, output, progressMessage);
   }
 
-  private LinkAction(
+  private DuplicateAction(
       ActionOwner owner, Artifact primaryInput, Artifact primaryOutput, String progressMessage) {
     super(
         owner,
@@ -87,7 +87,7 @@ public final class LinkAction extends AbstractAction {
     } catch (IOException e) {
       String message =
           String.format(
-              "failed to read metadata of '%s' for content link '%s': %s",
+              "failed to read metadata of '%s' for duplicate '%s': %s",
               input.getExecPathString(), getPrimaryOutput().getExecPathString(), e.getMessage());
       throw new ActionExecutionException(
           message, e, this, false, createDetailedExitCode(message));
@@ -118,7 +118,7 @@ public final class LinkAction extends AbstractAction {
 
   @Override
   public String getMnemonic() {
-    return "Link";
+    return "Duplicate";
   }
 
   @Override
