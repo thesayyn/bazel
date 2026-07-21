@@ -518,6 +518,13 @@ public abstract class AbstractActionInputPrefetcher implements ActionInputPrefet
     if (metadata.getResolvedPath() == null) {
       return null;
     }
+    if (metadata.materializeAsContent()) {
+      // A content link must be materialized as real content at its own path, never as a followable
+      // symlink to the resolved path (that is the whole point: a stable realpath within the
+      // consuming tree). Returning null means no symlink is planted, so the content is materialized
+      // at inputPath directly (by digest).
+      return null;
+    }
     Path resolvedPath = inputPath.getFileSystem().getPath(metadata.getResolvedPath());
     if (resolvedPath.equals(inputPath)) {
       return null;
